@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'suspects.dart';
+import 'request_manager.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,37 +25,56 @@ class MyApp extends StatelessWidget {
 // name: nome do suspeito
 // color: cor da appBar
 // text: texto a ser exibido na pagina(historico de mensagens com o suspeito)
-class DialogScreen extends StatelessWidget {
+class DialogScreen extends StatefulWidget {
   final String name;
   final Color color;
   final String text;
 
-  const DialogScreen(
-      {super.key, required this.name, required this.color, required this.text});
+  const DialogScreen({
+    super.key,
+    required this.name,
+    required this.color,
+    required this.text,
+  });
+
+  @override
+  State<DialogScreen> createState() => _DialogScreenState();
+}
+
+class _DialogScreenState extends State<DialogScreen> {
+  final _textController = TextEditingController();
+  String userInput = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: color,
-        title: Text(name),
+        backgroundColor: widget.color,
+        title: Text(widget.name),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child:
-                Text(text), // adicionar texto da conversa com o suspeito(gpt)
+            child: Text(suspeito1.text),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: TextField(
+              controller: _textController,
               autocorrect: true,
               autofocus: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Digite sua pergunta",
               ),
+              onSubmitted: (text) async {
+                suspeito1.text = await mensageSend(suspeito1);
+                setState(() {
+                  // suspeito1.text =
+                  //     suspeito1.text + '\n' + suspeito1.name + ': ' + text;
+                });
+              },
             ),
           ),
         ],
@@ -156,6 +176,7 @@ class SelectScreen extends StatelessWidget {
           ),
         ),
       ),
+      backgroundColor: Colors.black,
     );
   }
 }

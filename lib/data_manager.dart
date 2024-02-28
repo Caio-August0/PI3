@@ -1,9 +1,9 @@
 class DadosSuspect {
-  final String text;
-  final String name;
+  late String text;
+  late String name;
 
-  const DadosSuspect({
-    required this.text,
-    required this.name,
+  DadosSuspect({
+    this.text = '',
+    this.name = '',
   });
 }
