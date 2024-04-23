@@ -14,12 +14,12 @@ class Suspeito extends StatefulWidget {
 }
 
 class _SuspeitoState extends State<Suspeito> {
-  String _suspectText = ''; // Store suspect text for state management
+  String _suspectText = '';
 
   @override
   void initState() {
     super.initState();
-    _suspectText = widget.suspect.text; // Initialize with initial text
+    _suspectText = widget.suspect.text;
   }
 
   @override
@@ -38,7 +38,6 @@ class _SuspeitoState extends State<Suspeito> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    // Rebuild Text widget with updated _suspectText
                     Text(_suspectText),
                     SizedBox(height: 20),
                     TextField(
