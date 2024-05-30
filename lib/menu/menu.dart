@@ -4,9 +4,42 @@ import 'package:flutter/material.dart';
 import 'package:projeto_teste/seleção/selecao.dart';
 import 'package:projeto_teste/descrição/descricao.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:projeto_teste/suspeito/suspeito.dart';
+import 'package:projeto_teste/suspeitos-data/data_manager.dart';
+import 'package:projeto_teste/suspeitos-data/dbGameHandler.dart';
+import 'package:projeto_teste/suspeitos-data/suspects.dart';
+import '../components/button.dart';
 
-class Menu extends StatelessWidget {
+class Menu extends StatefulWidget {
   const Menu({super.key});
+  @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
+  var initFlag = false;
+
+  @override
+  void initState() {
+    super.initState();
+    verifyMemory();
+  }
+
+  Future<void> verifyMemory() async {
+    await DbGameHandler.instance.initialize();
+    final dbSuspects = await DbGameHandler.instance.getAllSuspects();
+    for (final dbSuspeito in dbSuspects) {
+      if (dbSuspeito.text != "") {
+        initFlag = true;
+        print(dbSuspeito.text);
+        for (final suspeito in suspeitos) {
+          if (suspeito.name == dbSuspeito.name) {
+            suspeito.text = dbSuspeito.text;
+          }
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,53 +84,33 @@ class Menu extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
-                  child: buttonGray(context, Descricao(), "Iniciar"),
+                  child: ButtonGray(
+                    context: context,
+                    toGo: Descricao(),
+                    text: "Novo jogo",
+                    newGame: true,
+                  ),
                 ),
-                buttonGray(context, Confg(), "Opções")
+                if (initFlag)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+                    child: ButtonGray(
+                      context: context,
+                      toGo: Selecao(),
+                      text: "Continuar",
+                      newGame: false,
+                    ),
+                  ),
+                ButtonGray(
+                  toGo: Confg(),
+                  text: "Opções",
+                  context: context,
+                  newGame: false,
+                )
               ],
             ),
           )
         ],
-      ),
-    );
-  }
-
-  Container buttonGray(BuildContext context, Widget toGo, String text) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.zero),
-        border: Border.all(width: 3, color: Color.fromARGB(255, 150, 150, 150)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2.0,
-            blurRadius: 5.0,
-            offset: Offset(1.0, 1.0),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        style: ButtonStyle(
-          shape: MaterialStateProperty.all<OutlinedBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.zero),
-            ),
-          ),
-          backgroundColor: MaterialStateProperty.all(Color(0xff2C2C2C)),
-          foregroundColor: MaterialStateProperty.all(Colors.white),
-          shadowColor: MaterialStateProperty.all(Colors.transparent),
-          textStyle: MaterialStateProperty.all(GoogleFonts.inika(
-            color: Colors.white,
-          )),
-          minimumSize: MaterialStatePropertyAll(Size(100, 46)),
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => toGo),
-          );
-        },
-        child: Text(text),
       ),
     );
   }
