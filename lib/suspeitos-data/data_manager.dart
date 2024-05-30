@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:projeto_teste/logger/logger.dart';
+
 class DadosSuspect {
   late String text;
   String name = '';
@@ -19,6 +24,19 @@ class DadosSuspect {
     this.img = '',
     this.crime = false,
   });
+
+  factory DadosSuspect.fromMap(Map<String, dynamic> map) {
+    return DadosSuspect(
+      name: map['name'] as String,
+      text: map['text'] as String,
+      // Assign values for other fields based on their types in map
+      img: map['img'] as String, // Assuming img is a String
+      persona: map['persona'] as String,
+      context: map['context'] as String,
+      rela: map['rela'] as String,
+      crime: map['crime'] as bool, // Assuming crime is a bool
+    );
+  }
 }
 
 String contructMensage(DadosSuspect suspect, String text) {

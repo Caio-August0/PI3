@@ -3,7 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_teste/data/request_manager.dart';
+import 'package:projeto_teste/logger/logger.dart';
 import 'package:projeto_teste/suspeitos-data/data_manager.dart';
+import 'package:logger/logger.dart';
+import 'package:projeto_teste/suspeitos-data/dbGameHandler.dart';
 
 class Suspeito extends StatefulWidget {
   final DadosSuspect suspect;
@@ -102,6 +105,13 @@ class _SuspeitoState extends State<Suspeito> {
                               '$_suspectText\n${widget.suspect.name}: $message';
                         });
                         widget.suspect.text = _suspectText;
+                        final count = await DbGameHandler.instance
+                            .updateSuspect(widget.suspect);
+                        if (count < 1) {
+                          await DbGameHandler.instance
+                              .addSuspect(widget.suspect);
+                        }
+                        print(count);
                       },
                     ),
                   ],

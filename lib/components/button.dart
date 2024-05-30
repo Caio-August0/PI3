@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:projeto_teste/suspeitos-data/dbGameHandler.dart';
 
 class ButtonGray extends StatelessWidget {
   const ButtonGray({
@@ -9,15 +10,18 @@ class ButtonGray extends StatelessWidget {
     required this.context,
     required this.toGo,
     required this.text,
+    required this.newGame,
   });
 
   final BuildContext context;
   final Widget toGo;
   final String text;
+  final bool newGame;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 130,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.zero),
         border: Border.all(width: 3, color: Color.fromARGB(255, 150, 150, 150)),
@@ -45,7 +49,11 @@ class ButtonGray extends StatelessWidget {
           )),
           minimumSize: MaterialStatePropertyAll(Size(100, 46)),
         ),
-        onPressed: () {
+        onPressed: () async {
+          if (newGame) {
+            await DbGameHandler.instance.dropTable();
+            await DbGameHandler.instance.createTable();
+          }
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => toGo),

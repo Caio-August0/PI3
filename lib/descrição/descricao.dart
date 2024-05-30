@@ -41,7 +41,12 @@ class Descricao extends StatelessWidget {
                     ),
                   ),
                 ),
-                ButtonGray(context: context, toGo: Selecao(), text: "Avançar"),
+                ButtonGray(
+                  context: context,
+                  toGo: Selecao(),
+                  text: "Avançar",
+                  newGame: false,
+                ),
               ])),
         ]));
   }
